@@ -152,15 +152,17 @@ app.get('*', (req, res) => {
 				});
 
 				document.addEventListener('visibilitychange', () => {
-					clearDemo();
+					console.log('visibilitychange', document.hidden)
+					if (container.status === 'end') {
+						clearDemo();
+					}
 				});
 
 				document.body.addEventListener('keydown', e => {
 
 					if (container.status !== 'playing' && e.key === ' ' && player && player.duration === player.currentTime) {
-						console.log('Ignoring space while video is stopped');
+						console.log('Ignoring space while video is stopped at end');
 						return e.preventDefault();
-						return e.stopPropagation();
 					}
 
 					if (e.metaKey && (e.key === '[' || e.key === ']')) {
