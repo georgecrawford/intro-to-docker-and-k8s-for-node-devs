@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nodejs
+  labels:
+    app: nodejs
+spec:
+  containers:
+  - name: nodejs
+    image: georgecrawford/node-docker-k8s-demo:v1

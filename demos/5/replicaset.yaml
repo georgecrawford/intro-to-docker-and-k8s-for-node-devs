@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: ReplicaSet
+metadata:
+ name: nodejs
+spec:
+ replicas: 1
+ selector:
+   matchLabels:
+     app: nodejs
+ template:
+   metadata:
+     labels:
+       app: nodejs
+   spec:
+     containers:
+      - name: nodejs
+        image: georgecrawford/node-docker-k8s-demo:v1
