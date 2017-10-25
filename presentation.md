@@ -4,13 +4,6 @@ autoscale: true
 
 ---
 
-### a little bit of
-# [fit] ops 
-### in your
-# [fit] dev
-
----
-
 # About me
 
 - George Crawford
@@ -20,6 +13,7 @@ autoscale: true
 - Freelance classical musician and Wordpress wrangler
 
 [.footer: [OVO Energy jobs](https://www.ovoenergy.com/careers/vacancies)  •  [FT.com](https://www.ft.com/)  •  [FT web app](https://app.ft.com/)  •  [FT Labs](https://labs.ft.com/)]
+[.build-lists: true]
 
 ---
 
@@ -63,7 +57,8 @@ autoscale: true
 
 ---
 
-# Part 1: FTP & mounted drives
+# Servers and me
+## Part 1: FTP & mounted drives
 
 ^ 
 - FTP code onto a server. Wordpress, etc.
@@ -71,7 +66,8 @@ autoscale: true
 
 ---
 
-# Part 2: Sandboxes, Puppet, Jenkins, scary 'prod'
+# Servers and me
+## Part 2: Sandboxes, Puppet, Jenkins, scary 'prod'
 
 ^ 
 - First real job
@@ -82,7 +78,8 @@ autoscale: true
 
 ---
 
-# Part 2: Sandboxes, Puppet, Jenkins, scary 'prod'
+# Servers and me
+## Part 2: Sandboxes, Puppet, Jenkins, scary 'prod'
 
 ^ 
 - Server configuration was managed by Puppet
@@ -94,7 +91,8 @@ autoscale: true
 
 ---
 
-# Part 2: Sandboxes, Puppet, Jenkins, scary 'prod'
+# Servers and me
+## Part 2: Sandboxes, Puppet, Jenkins, scary 'prod'
 
 ^ 
 - for local dev: a 'sandbox' server
@@ -106,7 +104,8 @@ autoscale: true
 
 ---
 
-# Part 3: Virtual Machines & Vagrant
+# Servers and me
+## Part 3: Virtual Machines & Vagrant
 
 ^ 
 - We then migrated to a Vagrant setup
@@ -116,7 +115,8 @@ autoscale: true
 
 ---
 
-# Part 3: Virtual Machines & Vagrant
+# Servers and me
+## Part 3: Virtual Machines & Vagrant
 
 ^ 
 - not a bad workflow
@@ -128,7 +128,8 @@ autoscale: true
 
 ---
 
-# Part 3: Virtual Machines & Vagrant
+# Servers and me
+## Part 3: Virtual Machines & Vagrant
 
 ^ 
 - Most worryingly:
@@ -138,24 +139,105 @@ autoscale: true
 
 ---
 
-# Cattle, not pets
+> "Cattle, not pets"
 
 ^ who's heard of this term?
 
 ---
 
-# Part 4: Containerisation
+# Pets
+- indispensable or unique systems that can never be down
+- manually built, managed, and 'hand fed'
+- need to be rebuilt if the server gets corrupted or suffers hardware failure
 
-
+[.build-lists: true]
 
 ---
 
-# Part 5: Orchestration
+# Cattle
+- Arrays of more than two servers
+- built using automated tools
+- designed for failures
+- no one server is irreplaceable
+- during failure events, no human intervention is required
+- the cluster routes around failures by load-balancing and restarting new servers
+- think...*abattoir*
 
+[.build-lists: true]
+
+---
+
+# Servers and me
+## Part 4: Containerisation
+
+^ 
+- what's wrong with the process I've described?
+- the longer a server lives, the more likely you are to treat it like a pet
+- servers are nurtured, but the changes don't make it back into version control
+- dev, ci, staging and production are architected differently
+
+---
+
+> The way I think about it: every difference between dev/staging/prod will eventually result in an outage
+
+[.footer: Joe Beda: [https://twitter.com/jbeda/status/921185541487341568](https://twitter.com/jbeda/status/921185541487341568)]
+
+---
+
+# Virtualisation
+
+![inline](./images/virtualisation.png) 
+
+[.footer: https://www.quora.com/What-is-the-difference-between-Docker-and-Vagrant-When-should-you-use-each-one]
+
+^ 
+- Vagrant uses virtualization
+- each virtual machine runs its own entire operating system inside a simulated hardware environment
+
+---
+
+# Containerisation
+
+![inline](./images/containerisation.png)
+
+[.footer: https://www.quora.com/What-is-the-difference-between-Docker-and-Vagrant-When-should-you-use-each-one]
+
+^ 
+- Docker uses containerization
+- allows multiple applications to run in isolated partitions of the kernel directly on the physical hardware
+
+---
+
+### Benefits of containerisation
+
+- isolated
+- encapsulated
+- declarative
+- versioned
+- standardised
+- repeatable
+- portable
+- verifiable
+- simple for developers
+
+[.build-lists: true]
+
+^ 
+- let's take a look at how we can improve confidence 
+- be sure that that the process you run locally in development behaves the same as in production
+- similar to the goals for good software design in general
 
 ---
 
 ## Docker 
+
+^
+- Docker is a way to package code into consistent units of work
+- the units can then be deployed to testing, QA and production environments
+- Docker needs to only to express the configuration for a single process
+- so unlike Puppet, Chef, etc., which need to manage a whole virtual machine
+- the problem becomes far easier
+
 
 ---
 
@@ -169,6 +251,17 @@ FROM [IMAGE]
 
 [.footer: /Dockerfile]
 
+
+---
+
+### Docker: image registry
+
+![right fit](images/dockerhub.png)
+
+[.footer: [https://hub.docker.com/_/node/](https://hub.docker.com/_/node/) ]
+
+^ Docker images inherit from other images - eventually down to a base image. For node, there are many varieties of tag on the 'Docker Hub' registry:
+
 ---
 
 ### Docker: introduction
@@ -180,23 +273,6 @@ FROM node:8
 ^ each line in the file is an instruction (inherit from another image, add files, run commands, set permissions, etc.)
 
 [.footer: /Dockerfile]
-
----
-
-### Docker: the Dockerfile
-
-| | |
---- | --- 
-**FROM** | define the base image used to start the build process
-**WORKDIR** | set the path where commands are executed, and files are copied to
-**ENV** | set environment variables
-**ADD** | add files from a source on the host to the container’s own filesystem
-**CMD** | set the default command to run when the container starts
-**ENTRYPOINT** | set the default application to be used when the container starts
-**EXPOSE** | expose a port to the outside world
-**RUN** | execute a script or command (e.g. bash)
-**USER** | set the UID (username) that will run the container
-**VOLUME** | enable access from the container to a directory on the host machine
 
 ---
 
@@ -232,17 +308,6 @@ $ docker run --rm -it badd967af535
 ^ Building an image gives us a checksum. We can make a container out of an image using `docker run`, and we have a Node 8 container.
 **demo: run**
 
-
----
-
-### Docker: image registry
-
-![right fit](images/dockerhub.png)
-
-[.footer: [https://hub.docker.com/_/node/](https://hub.docker.com/_/node/) ]
-
-^ Docker images inherit from other images - eventually down to a base image. For node, there are many varieties of tag on the 'Docker Hub' registry:
-
 ---
 
 ### Docker: Image variants
@@ -260,6 +325,24 @@ $ docker run --rm -it badd967af535
 | :**8.7** | < 8.8.0 |
 | :**8** | < 9.0.0 |
 | :**latest** | ∞ |
+
+
+---
+
+### Docker: the Dockerfile
+
+| | |
+--- | --- 
+**FROM** | define the base image used to start the build process
+**WORKDIR** | set the path where commands are executed, and files are copied to
+**ENV** | set environment variables
+**ADD** | add files from a source on the host to the container’s own filesystem
+**CMD** | set the default command to run when the container starts
+**ENTRYPOINT** | set the default application to be used when the container starts
+**EXPOSE** | expose a port to the outside world
+**RUN** | execute a script or command (e.g. bash)
+**USER** | set the UID (username) that will run the container
+**VOLUME** | enable access from the container to a directory on the host machine
 
 ---
 
@@ -282,35 +365,42 @@ RUN echo 'hello world!'
 
 ### Docker: layer caching
 
-Use `ENV` variables to bust the cache:
+Chain commands which belong together:
+<br>
 
-```docker, [.highlight: 10-12]
-RUN set -ex \
-  && for key in \
-    9554F04D7259F04124DE6B476D5A82AC7E37093B \
-    56730D5401028683275BD23C23EFEFE93C4CFFFE \
-  ; do \
-    gpg --keyserver pgp.mit.edu --recv-keys "$key" || \
-    gpg --keyserver keyserver.pgp.com --recv-keys "$key" || \
-    gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key" ; \
-  done
-
-ENV NPM_CONFIG_LOGLEVEL info
-ENV NODE_VERSION 8.7.0
-
-RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
-  && case "${dpkgArch##*-}" in \
-    amd64) ARCH='x64';; \
-    ppc64el) ARCH='ppc64le';; \
-    s390x) ARCH='s390x';; 
+```docker
+RUN apt-get update && apt-get install -y \
+  bzr \
+  cvs \
+  git \
+  mercurial \
+  subversion
 ```
 
-[.footer: [https://github.com/nodejs/docker-node/blob/master/8.7/Dockerfile](https://github.com/nodejs/docker-node/blob/master/8.7/Dockerfile)] 
+^ 
+- each line creates a cached image layer
+- you will often see multiple commands chained together: ensures dependencies are all cached in a single layer
+
+---
+
+### Docker: layer caching
+
+Use `ENV` variables to bust the cache:
+<br>
+
+```docker
+ENV PACKAGE_VERSION 8.7.0
+
+RUN apt-get update && apt-get install -y \
+        package-bar \
+        package-baz \
+        package-foo=$PACKAGE_VERSION
+```
+
 
 ^ 
-- So how can you even upgrade Node when it's always cached? 
+- So how can you even upgrade a package when it's always cached? 
 - Bust the cache in an earlier layer with environment variables
-- you can also see multiple commands chained together: ensures dependencies are all cached in a single layer
 
 ---
 
@@ -338,18 +428,44 @@ app.listen(PORT, HOST, () => {
 
 ###Docker: Simple example
 
+#### caching: the wrong way!
 
 ```docker
 FROM node:8-alpine
 
-WORKDIR /app
+EXPOSE 8080
 
-COPY package.json package-lock.json ./
-RUN npm install
+WORKDIR /app
 
 COPY . .
 
+# This will run when any source file changes, even if package.json didn't change
+RUN npm install
+
+CMD ["node", "index.js"]
+```
+
+[.footer: `/Dockerfile`]
+---
+
+###Docker: Simple example
+
+#### caching: the right way!
+
+```docker
+FROM node:8-alpine
+
 EXPOSE 8080
+
+WORKDIR /app
+
+# Copy only files required for `npm install` first: this layer changes rarely
+COPY package.json package-lock.json ./
+RUN npm install
+
+# Then copy the remaining files: this layer is more likely to change
+COPY . .
+
 CMD ["node", "index.js"]
 ```
 
@@ -379,39 +495,24 @@ $ curl localhost:1234
 ---
 
 ### Docker: Mounting volumes
+
 ```bash
 # Mount the current working directory into the container at /app
 $ docker run -p 1234:8080 -v $(pwd):/app 943cc8886f5f
 ```
 
----
-
-### Docker: Mounting volumes
-
+<br>
 - use Nodemon or PM2 to watch for filesystem changes
 - **Warning**: `inotify` often not supported, so use polling (`nodemon --legacy-watch`)
-- Lots of files can eat CPU, so consider watching _from the host_
-
-
-^ Then you can use `nodemon` or similar to restart the Node process when files change
-Caveat: Linux containers don't generally have native `inotify`, so tools like 
 
 [.footer: [https://github.com/remy/nodemon](https://github.com/remy/nodemon), [https://github.com/foreverjs/forever](https://github.com/foreverjs/forever), [http://pm2.keymetrics.io/](http://pm2.keymetrics.io/)]
-[.build-lists: true]
 
 ---
 
 ### Docker: Single process model
 
-- Nodemon, PM2, forever, etc.
+- Use PM2 or forever, etc.
 - or, use `dumb-init` to provide a well-behaved primary process to correctly respond to signals:
-
-[.footer: [https://github.com/Yelp/dumb-init](https://github.com/Yelp/dumb-init)]
-[.build-lists: true]
-
----
-
-### Docker: Single process model
 
 ```docker
 # Download and install dumb-init
@@ -425,18 +526,13 @@ ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["node", "index.js"]
 ```
 
+[.footer: [https://github.com/Yelp/dumb-init](https://github.com/Yelp/dumb-init)]
 
-[.footer: /Dockerfile]
-
----
-
-### Docker: advantages
-- **encapsulation**: A Docker container includes everything your app needs to run
-- **portability**: Docker runs cross-platform, and Docker images can be very easily shared
-- **trust**: A Docker image produces an _identical_ container in local dev, CI and production
-- **isolation**: Networking, file systems, processes, permissions are all tightly controller and isolated
-- **declarative**: The `Dockerfile` can be checked-in to version control, and new image manifests easily tested in CI
-- **speed**: Since a Docker container doesn't boot an OS, they can be extremely fast to start up
+^ 
+- docker is designed to work best when there is only one process running in the container
+- it should be well-behaved, so should respond correctly to signals to shutdown, etc
+- pm2 and forever wrap Node.js processes so they behave
+- If you're not sure, use Yelp's dumb-init, which will wrap your command so it's correctly terminated
 
 ---
 
@@ -450,21 +546,40 @@ CMD ["node", "index.js"]
 
 [.build-lists: true]
 
+---
 
+### Docker: advantages
+- **encapsulation**: A Docker container includes everything your app needs to run
+- **portability**: Docker runs cross-platform, and Docker images can be very easily shared. Reduces the _"it works on my machine"_ syndrome.
+- **trust**: A Docker image produces an _identical_ container in local dev, CI and production
+- **isolation**: Networking, file systems, processes, permissions are all tightly controlled and isolated
+- **declarative**: The `Dockerfile` can be checked-in to version control, and new image manifests easily tested in CI
+- **speed**: Since a Docker container doesn't boot an OS, they can be extremely fast to start up
+
+[.build-lists: true]
 
 ---
 
-# development
-![right](images/local.jpeg)
+### Docker: advantages
 
-[.footer: [https://goo.gl/6QbNrn](https://goo.gl/6QbNrn)]
+- more confidence: we know what is running on each server
+- processes are secure and isolated
+- easier for devs to spin up a production-like server environment for each app
+- no live-editing production, as changes will be lost
+- with no VM or OS, updates and deploys are very quick
+
+[.build-lists: true]
 
 ---
 
-# staging
-![right](images/staging.jpeg)
+### Docker is not enough
 
-[.footer: [https://goo.gl/QZEtpJ](https://goo.gl/QZEtpJ)]
+^ 
+- the application in a container is only a small part of the picture
+- components (front-end server, API server, database server, etc.) are now well-described with Docker images, but not how they communicate together
+- how can you be sure that the right number of containers are always running?
+- how can you make the best use of resources (CPU, memory)?
+
 
 ---
 
@@ -473,9 +588,36 @@ CMD ["node", "index.js"]
 
 [.footer: [https://goo.gl/TYU8fv](https://goo.gl/TYU8fv)]
 
+^
+- still a huge differences between dev, ci, staging and production
+- production has multiple redundant replicas of each server process, and a loadbalancer running across them. Perhaps also autoscaling
+
 ---
 
-## Kubernetes 
+# staging
+![right](images/staging.jpeg)
+
+[.footer: [https://goo.gl/QZEtpJ](https://goo.gl/QZEtpJ)]
+
+^ 
+- staging is often a low-powered, stripped down imitation of production
+
+---
+
+# development
+![right](images/local.jpeg)
+
+[.footer: [https://goo.gl/6QbNrn](https://goo.gl/6QbNrn)]
+
+^
+- local dev setup uses localhost, incorrect ports, different filesystems, etc.
+
+---
+
+# Servers and me
+## Part 5: Orchestration
+
+^ in particular, I'm going to talk about an orchestration platform called Kubernetes 
 
 ---
 
@@ -753,3 +895,45 @@ spec:
 
 [.footer: /ingress.yaml ]
 
+---
+
+### Benefits of Kubernetes
+
+- supported in loads of cloud providers
+- with minikube for local development, lots of things are _identical to production_
+- autoscaling, deployments, networking, resiliance are all built-in
+
+[.build-lists: true]
+
+---
+
+### Kubernetes: further reading
+
+
+- [Minikube](https://github.com/kubernetes/minikube) for local dev
+- We use [Nginx Ingress Controller](https://github.com/kubernetes/ingress-nginx), rather than a provider-specific loadbalancer, so our loadbalancer is identical in all environments
+- [Prometheus](https://prometheus.io/) for server metrics
+- [Helm](https://github.com/kubernetes/helm) (like Handlebars + NPM for Kubernetes YAML files)
+- [Stern](https://github.com/wercker/stern) (better logs)
+- [dnsmasq](http://www.thekelleys.org.uk/dnsmasq/doc.html) (useful for DNS with a local Minikube cluster)
+- [GitLab CI](https://about.gitlab.com/features/gitlab-ci-cd/) (fantastic integration with kubernetes)
+- [Docker support for Kubernetes](https://www.docker.com/kubernetes](https://www.docker.com/kubernetes)
+
+^ 
+- Local development will, I hope, be getting much nicer
+- Docker have just announced future support for Kubernetes in their free Community Edition
+- meaning you can run complete k8s setups locally, for free
+- using your OS's hypervisor rather than a virtual machine
+
+[.build-lists: true]
+
+---
+
+### a little bit of
+# [fit] ops 
+### in your
+# [fit] dev
+
+---
+
+> Questions?
